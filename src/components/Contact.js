@@ -44,6 +44,7 @@ function Contact() {
               className="mt-1 block w-full p-3 rounded-lg bg-spa-beige text-spa-brown border border-spa-gold"
               rows="4"
             />
+            
           </div>
           <button type="submit" className="w-full bg-spa-gold text-spa-brown p-3 rounded-lg hover:bg-spa-aqua transition">Send Message</button>
         </form>

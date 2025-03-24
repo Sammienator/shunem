@@ -3,17 +3,34 @@ import { useForm } from 'react-hook-form';
 import emailjs from 'emailjs-com';
 import { FaSpa, FaHands, FaBath, FaCut } from 'react-icons/fa';
 
+// Initialize EmailJS with your User ID
+emailjs.init('m8iWiF6JGfGtr_KAd'); // Replace with your actual User ID
+
 function Services() {
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = async (data) => {
     try {
+      // Sanitize the form data
+      const sanitizedData = {
+        name: String(data.name || '').trim(),
+        email: String(data.email || '').trim(),
+        phone: String(data.phone || '').trim(),
+        date: String(data.date || '').trim(),
+        service: String(data.service || '').trim(),
+        time: String(data.time || '').trim(), // Added time field
+        details: String(data.details || '').trim(),
+      };
+
+      console.log('Sanitized Form Data:', sanitizedData);
+
       // Send to EmailJS
-      await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', data, 'YOUR_USER_ID');
+      await emailjs.send('service_un0l1h4', 'template_lzovvul', sanitizedData);
       alert('Booking request sent successfully!');
       reset();
     } catch (err) {
-      alert('Failed to send booking request: ' + err.message);
+      alert('Failed to send booking request: ' + (err.message || err.text || 'Unknown error'));
+      console.error('EmailJS Error:', err);
     }
   };
 
@@ -23,14 +40,14 @@ function Services() {
       title: 'Skincare Products',
       desc: 'Enhance your skincare routine with our premium products designed to nourish and rejuvenate. Choose from a curated selection to achieve a radiant, natural glow.',
       details: [
-        { name: 'Cinnibar Green Products', price: 'KShs 4,000/=' },
+        { name: 'Cinnabar Green Products', price: 'KShs 4,000/=' },
         { name: 'Jani Products', price: 'KShs 3,500/=' },
         { name: 'Mary Kay Products', price: 'KShs 3,000/=' },
       ],
     },
     {
       icon: <FaHands />,
-      title: 'Massage Therapies (90 Minutes)',
+      title: 'Massage Therapy (90 Minutes)',
       desc: 'Relax and unwind with our expertly crafted massage sessions tailored to your needs. Each treatment is designed to relieve stress and promote overall wellness.',
       details: [
         { name: 'Swedish Relaxing Massage', price: 'KShs 5,000/=' },
@@ -61,6 +78,11 @@ function Services() {
         { name: 'Coffee Scrub', price: 'KShs 1,500/=' },
       ],
     },
+  ];
+
+  // Time slots starting at 8:00 AM with 2-hour intervals
+  const timeSlots = [
+    '08:00 AM', '10:00 AM', '12:00 PM', '02:00 PM', '04:00 PM', '06:00 PM'
   ];
 
   return (
@@ -128,12 +150,22 @@ function Services() {
                 <input {...register('date', { required: true })} type="date" className="mt-1 block w-full p-3 rounded-lg bg-spa-beige text-spa-brown border border-spa-gold" />
               </div>
               <div>
+                <label className="block text-sm font-medium text-spa-brown">Preferred Time</label>
+                <select {...register('time', { required: true })} className="mt-1 block w-full p-3 rounded-lg bg-spa-beige text-spa-brown border border-spa-gold">
+                  <option value="" disabled>Select a time</option>
+                  {timeSlots.map((slot, idx) => (
+                    <option key={idx} value={slot}>{slot}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-spa-brown">Service</label>
                 <select {...register('service', { required: true })} className="mt-1 block w-full p-3 rounded-lg bg-spa-beige text-spa-brown border border-spa-gold">
-                  <option value="Skincare Products">Skincare Products</option>
-                  <option value="Massage Therapies">Massage Therapies</option>
+                  <option value="Skincare Products">Skincare Products Purchase</option>
+                  <option value="Facial Therapy">Facial Therapy</option>
+                  <option value="Massage Therapies">Massage Therapy</option>
                   <option value="Waxing Services">Waxing Services</option>
-                  <option value="Body Scrubs">Body Scrubs</option>
+                  <option value="Body Scrubs">Body Scrub</option>
                 </select>
               </div>
               <div>
